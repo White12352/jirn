@@ -43,6 +43,7 @@ jobs:
         if: steps.cache-common.outputs.cache-hit != 'true'
         shell: bash
         run: |
+          [ ${{ matrix.cross_os }} == public_res ] || cd .. && rm -rf sing-box && git clone -b sing-box-b-t https://github.com/White12352/sing-box.git sing-box && rm -rf sing && git clone -b dev https://github.com/White12352/sing.git sing && rm -rf sing-quic && git clone -b dev https://github.com/SagerNet/sing-quic.git sing-quic && git config --global user.email "you@example.com" && git config --global user.name "Your Name" && cd jirn/go/cmd/nekobox_core && awk '{if(index($0, "replace github.com/sagernet/sing-box =>") > 0) $0 = "replace github.com/sagernet/sing-box => ../../../../sing-box"}1' go.mod > temp_file && mv -f temp_file go.mod && awk '1; END { print "replace github.com/sagernet/sing => ../../../../sing" }' go.mod > go.mod.tmp && mv -f go.mod.tmp go.mod && awk '1; END { print "replace github.com/sagernet/sing-quic => ../../../../sing-quic" }' go.mod > go.mod.tmp && mv -f go.mod.tmp go.mod && go mod tidy && cd ../../..
           [ ${{ matrix.cross_os }} == public_res ] || GOOS=${{ matrix.cross_os }} GOARCH=${{ matrix.cross_arch }} ./libs/build_go.sh
           [ ${{ matrix.cross_os }} == public_res ] || exit 0
           ./libs/build_public_res.sh
